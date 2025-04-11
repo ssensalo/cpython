@@ -1105,11 +1105,7 @@ class Path(PurePath):
         if not hasattr(target, 'with_segments'):
             target = self.with_segments(target)
         ensure_distinct_paths(self, target)
-        try:
-            copy_to_target = target._copy_from
-        except AttributeError:
-            raise TypeError(f"Target path is not writable: {target!r}") from None
-        copy_to_target(self, **kwargs)
+        target._copy_from(self, **kwargs)
         return target.joinpath()  # Empty join to ensure fresh metadata.
 
     def copy_into(self, target_dir, **kwargs):
@@ -1282,8 +1278,12 @@ class Path(PurePath):
         """Return a new path from the given 'file' URI."""
         if not uri.startswith('file:'):
             raise ValueError(f"URI does not start with 'file:': {uri!r}")
+        from urllib.error import URLError
         from urllib.request import url2pathname
-        path = cls(url2pathname(uri.removeprefix('file:')))
+        try:
+            path = cls(url2pathname(uri.removeprefix('file:')))
+        except URLError as exc:
+            raise ValueError(exc.reason) from None
         if not path.is_absolute():
             raise ValueError(f"URI is not absolute: {uri!r}")
         return path
