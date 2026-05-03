@@ -974,6 +974,15 @@ http.server
   for files with unknown extensions.
   (Contributed by John Comeau and Hugo van Kemenade in :gh:`113471`.)
 
+* Add a new ``extra_response_headers`` keyword argument to
+  :class:`~http.server.SimpleHTTPRequestHandler` to support custom headers in
+  HTTP responses.
+  (Contributed by Anton I. Sipos in :gh:`135057`.)
+
+* Add a ``-H/--header`` option to the :program:`python -m http.server`
+  command-line interface to support custom headers in HTTP responses.
+  (Contributed by Anton I. Sipos in :gh:`135057`.)
+
 
 inspect
 -------
